@@ -1,0 +1,52 @@
+##############################
+# SERVICES
+#
+services:
+  ####################
+  # OBSERVABILITY
+  #
+  ##########
+  #  # Glances - System Information
+  #
+  glances:
+    image: nicolargo/glances:${GLANCES_TAG:-latest}
+    container_name: glances
+    profiles: ["observability", "debug"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:61208/api/4/status"]
+      start_period: 30s
+      interval: 10s
+      timeout: 3s
+    depends_on:
+      socket-proxy:
+        condition: service_healthy
+    restart: unless-stopped
+    privileged: true
+    security_opt:
+      - no-new-privileges:true
+    # network_mode: host
+    networks:
+      - socket_proxy
+    ports:
+      - ${GLANCES_PORT:-61208}:61208        # Web UI
+      - ${GLANCES_XMLRPC_PORT:-61209}:61209    # XMLRPC
+    pid: host
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${HOMES_DIR}:/data/home:ro
+    environment:
+      TZ: ${TZ}
+      # GLANCES_OPT: "-C /glances/conf/glances.conf --quiet --export influxdb"
+      # GLANCES_OPT: "--export influxdb"
+      GLANCES_OPT: "-w"
+      DOCKER_HOST: tcp://socket-proxy:${SOCKET_PROXY_PORT:-2375}
+    labels:
+      caddy: glances.home.hessenflow.net
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      caddy.tls: "internal"
+  #
+  ##########
+  #
+  ####################
+#
+############################## 

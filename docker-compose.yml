@@ -1,0 +1,101 @@
+# MAIN DOCKER-COMPOSE
+
+##############################
+# IT MANAGEMENT
+#
+include:
+  # echo COMPOSE_PROFILES=container_management,observability,identity,remote_access,security >> .env
+  ##########
+  # Default Services
+  # profile:
+  # COMPOSE_PROFILES:
+  #
+  # Socket-Proxy to avoid direct access to docker socket
+  - path:     ./socket-proxy/docker-compose.yml
+    #env_file: ./socket-proxy/.env
+  # Watchtower to update containers automatically
+  - path:     ./watchtower/docker-compose.yml
+    #env_file: ./watchtower/.env
+
+  # Caddy Docker Proxy
+  - path:     ./caddy/docker-compose.yml
+    #env_file: ./caddy/.env
+  #
+  ##########
+
+  ##########
+  # Container Management
+  # profile: ["container_management"] | ["container_management_agent"]
+  # COMPOSE_PROFILES=container_management
+  # COMPOSE_PROFILES=container_management_agent
+  #
+  # Portainer for container management
+  - path:     ./portainer/docker-compose.yml
+    #env_file: ./portainer/.env
+  #
+  ##########
+
+  ##########
+  # Monitoring & Observability
+  # profiles: ["observability", "debug"]
+  # COMPOSE_PROFILES=observability | debug
+  #
+  # Glances is a cross-platform monitoring tool that provides a real-time overview of system performance
+  - path:     ./glances/docker-compose.yml
+    #env_file: ./glances/.env
+  # Dozzle is a lightweight log viewer for Docker containers
+  - path:     ./dozzle/docker-compose.yml
+    #env_file: ./dozzle/.env
+  #
+  ##########
+
+  ##########
+  # Authentication & Identity Management
+  # profiles: ["identity"]
+  # COMPOSE_PROFILES=identity
+  #
+  # Authentik is an open-source identity provider for managing user authentication and authorization
+  - path:     ./authentik/docker-compose.yml
+    #env_file: ./authentik/.env
+  #
+  ##########
+
+  ##########
+  # Remote Access & VPN
+  # profiles: ["remote_access"]
+  # COMPOSE_PROFILES=remote_access
+  #
+  # Guacamole is a clientless remote desktop gateway that provides access to remote desktops through a web browser
+  - path:     guacamole/docker-compose.yml
+    #env_file: guacamole/.env
+  #
+  ##########
+
+  ##########
+  # Security & Network Management
+  # profiles: ["security"]
+  # COMPOSE_PROFILES=security
+  #
+  # Cloudflared is used to create secure tunnels to Cloudflare, allowing access to services
+  # without exposing them directly to the internet
+  - path:     ./cloudflared/docker-compose.yml
+    #env_file: ./cloudflared/config.d/cloudflared.env
+  #
+  ##########
+#
+##############################
+
+##############################
+# NETWORKS
+#
+networks:
+  default:
+    name: mgmt-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.32/27
+  monitor-net:
+    external: true
+#
+##############################

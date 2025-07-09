@@ -1,0 +1,63 @@
+# Ignore the default container config directories
+**/config/**
+**/data/**
+
+# Ignore "secrets" folders at any level
+**/secrets/**
+
+# Ignore environment files with sensitive data
+.env
+*.env
+# But allow example/template files
+!.env.example
+!.env.template
+
+# Ignore cache
+cache
+
+# Ignore Logs
+logs
+*.log
+*.log.*
+
+# Ignore Archives/Backups
+archive
+backup
+**/backup/**
+**/backups/**
+**/*-bkp/**
+
+# Ignore backup files
+backup.sh
+*.tar.gz
+*.zip
+
+# Ignore SSL certificates and keys
+**/*.pem
+**/*.key
+**/*.crt
+**/*.p12
+**/*.pfx
+
+# Ignore database files
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+
+# Ignore temporary files
+*.tmp
+*.temp
+**/.DS_Store
+**/Thumbs.db
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore security check script (optional)
+security_check.sh
+
+# Keep .gitkeep enabled directories (empty)
+!.gitkeep

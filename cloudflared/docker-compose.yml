@@ -1,0 +1,40 @@
+##############################
+# SECRETS (Non-Swarm)
+#
+secrets:
+  tunnel_token:
+    file: ./secrets/tunnel_token
+#
+##############################
+
+##############################
+# SERVICES
+#
+services:
+  ####################
+  # cloudflared
+  #
+  ##########
+  # cloudflared - Used to reverse tunnel from host network to Cloudflare
+  #
+  cloudflared:
+    image: cloudflare/cloudflared:${CLOUDFLARED_TAG:-latest}
+    container_name: cloudflare
+    profiles: ["security"]
+    restart: always
+    command: tunnel run
+    security_opt:
+      - no-new-privileges:true
+    secrets:
+      - tunnel_token
+    networks:
+      - default
+    environment:
+      TZ: ${TZ}
+      TUNNEL_TOKEN_FILE: /run/secrets/tunnel_token
+  #
+  ##########
+  #
+  ####################
+#
+##############################

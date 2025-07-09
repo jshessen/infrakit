@@ -1,0 +1,242 @@
+##############################
+# VOLUMES
+#
+volumes:
+  authentik_database:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./config/db
+      o: bind
+  redis:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./config/redis
+      o: bind
+  geoip:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./config/geoip
+      o: bind
+#
+##############################
+
+##############################
+# SECRETS (Non-Swarm)
+#
+secrets:
+  authentik_db_password:
+    file: ./secrets/authentik_db_password
+  authentik_secret_key:
+    file: ./secrets/authentik_secret_key
+  email_user:
+    file: ./secrets/email_user
+  email_password:
+    file: ./secrets/email_password
+  email_from:
+    file: ./secrets/email_from
+  geoip_account:
+    file: ./secrets/geoip_account
+  geoip_license:
+    file: ./secrets/geoip_license
+#
+##############################
+
+##############################
+# SERVICES
+#
+services:
+  ##########
+  # Authentik - Database to store all configuration data
+  #
+  postgresql:
+    image: postgres:17-alpine
+    container_name: authentik_postgresql
+    profiles: ["identity"]
+    secrets:
+      - authentik_db_password
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    networks:
+      - default
+    volumes:
+      - authentik_database:/var/lib/postgresql/data
+    environment:
+      #- POSTGRES_PASSWORD=${PG_PASS:?database password required}
+      POSTGRES_PASSWORD_FILE: /run/secrets/authentik_db_password
+      POSTGRES_USER: ${PG_USER:-authentik}
+      POSTGRES_DB: ${PG_DB:-authentik}
+    env_file:
+      - ./config/authentik.container.env
+  #
+  ##########
+
+  ##########
+  # Authentik - Redis, cache non-persistent data, such as session details. Improves responsiveness, in a high activity environment.
+  #
+  redis:
+    image: redis:alpine
+    command: --save 60 1 --loglevel warning
+    container_name: authentik_redis
+    profiles: ["identity"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - redis:/data
+  #
+  ##########
+
+  ##########
+  # Authentik - server container consists of two sub-components, the actual server itself and the embedded outpost.
+  #             Together they handle the logic, flows, SSO requests, API requests, etc.
+  #
+  authentik:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.10.0}
+    container_name: authentik_server
+    profiles: ["identity"]
+    healthcheck:
+      test: ["CMD-SHELL", "/lifecycle/ak healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    command: server
+    secrets:
+      - authentik_secret_key
+      - authentik_db_password
+      - email_user
+      - email_password
+      - email_from
+      - geoip_account
+      - geoip_license
+    environment:
+      #AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_SECRET_KEY: file:///run/secrets/authentik_secret_key
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      #AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_POSTGRESQL__PASSWORD: file:///run/secrets/authentik_db_password
+      # Email configuration using secrets
+      AUTHENTIK_EMAIL__USERNAME: file:///run/secrets/email_user
+      AUTHENTIK_EMAIL__PASSWORD: file:///run/secrets/email_password
+      AUTHENTIK_EMAIL__FROM: file:///run/secrets/email_from
+      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
+      # WORKERS: 2
+    networks:
+      - default
+      - monitor-net
+    volumes:
+      #- ./media:/media
+      - ./config/custom-templates:/templates
+      - geoip:/geoip
+    env_file:
+      - ./config/authentik.container.env
+    ports:
+      - "0.0.0.0:${AUTHENTIK_PORT_HTTP:-9000}:9000"
+      - "0.0.0.0:${AUTHENTIK_PORT_HTTPS:-9443}:9443"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  #
+  ##########
+
+  ##########
+  # Authentik - worker executes background tasks, such as sending emails, notifications, etc.
+  #
+  worker:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.10.0}
+    container_name: authentik_worker
+    profiles: ["identity"]
+    healthcheck:
+      test: ["CMD-SHELL", "/lifecycle/ak healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    command: worker
+    secrets:
+      - authentik_secret_key
+      - authentik_db_password
+    user: root
+    networks:
+      - default
+      - socket_proxy
+    volumes:
+      - ./config/media:/media
+      - ./config/certs:/certs
+      - ./config/custom-templates:/templates
+      - geoip:/geoip
+      #- /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: ${TZ}
+      DOCKER_HOST: tcp://socket-proxy:${SOCKET_PROXY_PORT:-2375}
+      #AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_SECRET_KEY: file:///run/secrets/authentik_secret_key
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      #AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_POSTGRESQL__PASSWORD: file:///run/secrets/authentik_db_password
+      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
+      # This is optional, and can be removed. If you remove this, the following will happen
+      # - The permissions for the /media folders aren't fixed, so make sure they are 1000:1000
+      # - The docker socket can't be accessed anymore
+    env_file:
+      - ./config/authentik.container.env
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  #
+  ##########
+
+  ##########
+  # Authentik - GeoIP Updater
+  #
+  geoipupdate:
+    image: "maxmindinc/geoipupdate:latest"
+    container_name: authentik_geoipupdate
+    profiles: ["identity"]
+    secrets:
+      - geoip_account
+      - geoip_license
+    networks:
+      - default
+    volumes:
+      - geoip:/usr/share/GeoIP
+    environment:
+      GEOIPUPDATE_EDITION_IDS: "GeoLite2-City"
+      GEOIPUPDATE_FREQUENCY: "8"
+      GEOIPUPDATE_ACCOUNT_ID_FILE: /run/secrets/geoip_account
+      GEOIPUPDATE_LICENSE_KEY_FILE: /run/secrets/geoip_license
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  #
+  ##########
+  #
+  ####################
+#
+##############################

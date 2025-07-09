@@ -1,0 +1,48 @@
+name: Security Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run security check
+      run: |
+        chmod +x ./security_check.sh
+        ./security_check.sh
+        
+    - name: Check for secrets in commits
+      run: |
+        # Check if any secrets might be exposed
+        if grep -r -E "(password|secret|key|token|api).*(=|:).+[a-zA-Z0-9]{8,}" . --exclude-dir=.git --exclude="*.example" --exclude="*.md" | grep -v "file:///run/secrets/" | grep -v "_FILE:"; then
+          echo "❌ Potential secrets found in files"
+          exit 1
+        else
+          echo "✅ No secrets detected"
+        fi
+        
+    - name: Validate Docker Compose files
+      run: |
+        # Check if docker-compose files are valid
+        for file in $(find . -name "docker-compose.yml" -o -name "docker-compose.yaml"); do
+          echo "Validating $file"
+          docker-compose -f "$file" config > /dev/null
+        done
+        
+    - name: Check for required files
+      run: |
+        # Ensure critical files exist
+        required_files=(".env.example" "README.md" "SECRETS_SETUP.md" "Makefile")
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ Required file missing: $file"
+            exit 1
+          fi
+        done
+        echo "✅ All required files present"

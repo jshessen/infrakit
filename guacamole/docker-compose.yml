@@ -1,0 +1,137 @@
+##############################
+# VOLUMES
+#
+volumes:
+  guacamole_database:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./config/db
+      o: bind
+#
+##############################
+
+##############################
+# SECRETS (Non-Swarm)
+#
+secrets:
+  guacamole_db_password:
+    file: ./secrets/guacamole_db_password
+  guacamole_ldap_password:
+    file: ./secrets/guacamole_ldap_password
+#
+##############################
+
+##############################
+# SERVICES
+#
+services:
+  ##########
+  # Guacamole - Database to store all configuration data
+  #
+  guacdb:
+    image: postgres:latest
+    container_name: guacamole_database
+    profiles: ["remote_access"]
+    secrets:
+      - guacamole_db_password
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRESQL_DB} -U $${POSTGRESQL_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    networks:
+      - default
+    volumes:
+      - guacamole_database:/var/lib/postgresql/data
+      - ./config/init:/docker-entrypoint-initdb.d # can be removed after initialization
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      TZ: ${TZ}
+      PGDATA: /var/lib/postgresql/data/guacamole
+      #- POSTGRESQL_PASSWORD=${PG_PASS:?database password required}
+      POSTGRESQL_PASSWORD_FILE: /run/secrets/guacamole_db_password
+      POSTGRESQL_USER: ${PG_USER:-guacamole}
+      POSTGRESQL_DB: ${PG_DB:-guacamole_db}
+  #
+  ##########
+
+  ##########
+  # Guacamole - Daemon to handle remote desktop connections
+  #
+  guacd:
+    image: guacamole/guacd:${GUACAMOLE_TAG:-latest}
+    container_name: guacamole_backend
+    profiles: ["remote_access"]
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "4822"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    security_opt:
+      - label:disable
+    networks:
+      - default
+    restart: always
+    volumes:
+      - ./config/recordings:/var/lib/guacamole/recordings:rw
+      - ./config/drive:/drive:rw
+      - /etc/localtime:/etc/localtime:ro
+  #
+  ##########
+
+  ##########
+  # Guacamole - Frontend web application
+  #
+  guacamole:
+    image: guacamole/guacamole:${GUACAMOLE_TAG:-latest}
+    container_name: guacamole_frontend
+    profiles: ["remote_access"]
+    healthcheck:
+      test: ["CMD", "curl", "-I", "-f", "http://localhost:8080/guacamole/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    secrets:
+      - guacamole_db_password
+      - guacamole_ldap_password
+    depends_on:
+      guacdb:
+        condition: service_healthy
+      guacd:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt:
+      - label:disable
+    networks:
+      - default
+    ports:
+      - ${GUACAMOLE_PORT:-8080}:8080
+    volumes:
+      - ./config/recordings:/var/lib/guacamole/recordings:ro
+      - ./config/drive:/drive:rw
+      - ./config/certs:/certificates
+      - ./config/certs/cacerts:/opt/java/openjdk/jre/lib/security/cacerts
+      - /etc/localtime:/etc/localtime:ro
+    #command: ["bash", "/guacamole-home/certs/trust_pem.sh"]
+    environment:
+      PGID: ${USERS_GID}
+      GUACD_HOSTNAME: guacd
+
+      ### DB SETTINGS
+      POSTGRESQL_HOSTNAME: guacdb
+      POSTGRESQL_PASSWORD_FILE: /run/secrets/guacamole_db_password
+      POSTGRESQL_USER: ${PG_USER:-guacamole}
+      POSTGRESQL_DB: ${PG_DB:-guacamole_db}
+
+      ### LDAP SETTINGS
+      LDAP_SEARCH_BIND_PASSWORD_FILE: /run/secrets/guacamole_ldap_password
+    env_file:
+      - ./config/guacamole.container.env
+  #
+  ##########
+#
+##############################

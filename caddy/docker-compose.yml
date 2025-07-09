@@ -1,0 +1,69 @@
+# MAIN DOCKER-COMPOSE
+
+##############################
+# VOLUMES
+#
+volumes:
+  caddy_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data
+      o: bind
+  caddy_config:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./config
+      o: bind
+#
+##############################
+
+##############################
+# SECRETS (Non-Swarm)
+#
+secrets:
+  caddy_jwt_token_key:
+    file: ./secrets/caddy_jwt_token_key
+#
+##############################
+
+##############################
+# SERVICES
+#
+services:
+  ##########
+  # Caddy 2 - a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go
+  #
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:${CADDY_TAG:-2.10-alpine}
+    #build: ./caddy/config
+    container_name: gatekeeper
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - default
+      - socket_proxy
+    ports:
+      - ${CADDY_HTTP_PORT:-58080}:80
+      - ${CADDY_HTTPS_PORT:-58443}:443
+      - ${CADDY_METRICS_PORT:-2019}:2019
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/etc/caddy
+    secrets:
+      - caddy_jwt_token_key
+    environment:
+      TZ: ${TZ}
+      JWT_SHARED_KEY: /run/secrets/caddy_jwt_token_key
+      DOCKER_HOST: tcp://socket-proxy:${SOCKET_PROXY_PORT:-2375}
+    deploy:
+      labels:
+        caddy.email: jeff.hessenflow@gmail.com
+  #
+  ##########
+  #
+  ####################
+#
+############################## 

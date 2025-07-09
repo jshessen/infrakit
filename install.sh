@@ -1,0 +1,142 @@
+#!/bin/bash
+
+# IT Management Installer
+# Supports multiple deployment types
+
+set -e
+
+REPO_URL="https://github.com/yourusername/it-management.git"
+DEPLOYMENT_TYPE=""
+INSTALL_DIR=""
+
+show_help() {
+    echo "IT Management Installer"
+    echo ""
+    echo "Usage: $0 [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  -t, --type TYPE     Deployment type (full|edge|monitor)"
+    echo "  -d, --dir DIR       Installation directory (default: ./it_management)"
+    echo "  -h, --help          Show this help"
+    echo ""
+    echo "Deployment Types:"
+    echo "  full     - Complete IT management stack (main server)"
+    echo "  edge     - Lightweight edge agent (Portainer agent + Watchtower)"
+    echo "  monitor  - Monitoring only (Glances + Watchtower)"
+    echo ""
+    echo "Examples:"
+    echo "  $0 --type full                    # Install full stack"
+    echo "  $0 --type edge --dir /opt/edge    # Install edge agent"
+    echo "  $0 --type monitor                 # Install monitoring only"
+}
+
+install_full() {
+    echo "📦 Installing full IT management stack..."
+    git clone "$REPO_URL" "$INSTALL_DIR"
+    cd "$INSTALL_DIR"
+    ./setup_env.sh
+    echo "✅ Full installation complete!"
+    echo "Next steps:"
+    echo "1. Edit .env files to customize configuration"
+    echo "2. Follow SECRETS_SETUP.md to create secrets"
+    echo "3. Run 'make up' to start services"
+}
+
+install_edge() {
+    echo "🔗 Installing edge agent..."
+    git clone "$REPO_URL" "$INSTALL_DIR"
+    cd "$INSTALL_DIR"
+    
+    # Copy only edge deployment files
+    cp -r deployments/edge-agent/* .
+    rm -rf deployments/
+    
+    # Clean up unnecessary files
+    find . -name "*.md" -not -name "README.md" -delete
+    find . -name "docker-compose.yml" -not -path "./docker-compose.yml" -delete
+    
+    make setup
+    echo "✅ Edge agent installation complete!"
+    echo "Next steps:"
+    echo "1. Edit .env with your main server details"
+    echo "2. Run 'make up' to start agent"
+}
+
+install_monitor() {
+    echo "📊 Installing monitoring stack..."
+    git clone "$REPO_URL" "$INSTALL_DIR"
+    cd "$INSTALL_DIR"
+    
+    # Set monitoring profile
+    cp .env.monitoring .env
+    ./setup_env.sh
+    
+    echo "✅ Monitoring installation complete!"
+    echo "Next steps:"
+    echo "1. Edit .env to customize monitoring settings"
+    echo "2. Run 'make up' to start monitoring"
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -t|--type)
+            DEPLOYMENT_TYPE="$2"
+            shift 2
+            ;;
+        -d|--dir)
+            INSTALL_DIR="$2"
+            shift 2
+            ;;
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+# Set default installation directory
+if [ -z "$INSTALL_DIR" ]; then
+    INSTALL_DIR="./it_management"
+fi
+
+# Validate deployment type
+if [ -z "$DEPLOYMENT_TYPE" ]; then
+    echo "❌ Error: Deployment type is required"
+    show_help
+    exit 1
+fi
+
+# Check if directory exists
+if [ -d "$INSTALL_DIR" ]; then
+    echo "❌ Error: Directory $INSTALL_DIR already exists"
+    exit 1
+fi
+
+# Install based on type
+case "$DEPLOYMENT_TYPE" in
+    full)
+        install_full
+        ;;
+    edge)
+        install_edge
+        ;;
+    monitor)
+        install_monitor
+        ;;
+    *)
+        echo "❌ Error: Unknown deployment type: $DEPLOYMENT_TYPE"
+        show_help
+        exit 1
+        ;;
+esac
+
+echo ""
+echo "🚀 Installation complete!"
+echo "📁 Installed in: $INSTALL_DIR"
+echo "📖 Check README.md for next steps"

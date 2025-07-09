@@ -1,0 +1,40 @@
+##############################
+# SERVICES
+#
+services:
+  ####################
+  # WATCHTOWER
+  #
+  ##########
+  # Docker Watchtower - Used to update containers automatically
+  #
+  watchtower:
+    image: containrrr/watchtower:${WATCHTOWER_TAG:-latest}
+    container_name: watchtower
+    profiles: ["container_management"]
+    depends_on:
+      socket-proxy:
+        condition: service_healthy
+    restart: always
+    healthcheck:
+      test: ["CMD", "/watchtower", "--health-check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - socket_proxy
+    #volumes:
+      #- /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: ${TZ}
+      DOCKER_HOST: tcp://socket-proxy:${SOCKET_PROXY_PORT:-2375}
+    #labels:
+  #
+  ##########
+  #
+  ####################
+#
+##############################
