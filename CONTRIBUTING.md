@@ -1,6 +1,6 @@
-# Contributing to IT Management Docker Stack
+# Contributing to InfraKit
 
-Thank you for your interest in contributing! This document provides guidelines for contributing to this project.
+Thank you for your interest in contributing to InfraKit! This document provides guidelines for contributing to this project.
 
 ## 🤝 How to Contribute
 
@@ -27,7 +27,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 4. **Test thoroughly**
 5. **Run security checks**
    ```bash
-   ./security_check.sh
+   ./scripts/security_check.sh
    ```
 6. **Submit a pull request**
 
@@ -97,14 +97,14 @@ it_management/
 ### Setup
 ```bash
 git clone <your-fork>
-cd it_management
-./setup_env.sh
+cd infrakit
+./scripts/setup_env.sh
 ```
 
 ### Testing
 ```bash
 # Security check
-./security_check.sh
+./scripts/security_check.sh
 
 # Test full deployment
 make up

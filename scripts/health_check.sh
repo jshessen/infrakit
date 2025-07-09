@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# Health check script for IT Management services
+# Health check script for InfraKit services
 
-echo "🏥 IT Management Health Check"
-echo "============================="
+# Source docker-compose compatibility
+source ./scripts/docker-compose-compat.sh
+
+echo "🏥 InfraKit Health Check"
+echo "========================"
 echo ""
 
 # Function to check if a service is healthy
@@ -15,7 +18,7 @@ check_service_health() {
     echo -n "🔍 Checking $service_name... "
     
     # Check if container is running
-    if ! docker-compose ps | grep -q "$service_name.*Up"; then
+    if ! docker_compose ps | grep -q "$service_name.*Up"; then
         echo "❌ Container not running"
         return 1
     fi
@@ -46,41 +49,41 @@ echo "📋 Service Health Status:"
 echo ""
 
 # Check services based on profile
-if docker-compose ps | grep -q "authentik"; then
+if docker_compose ps | grep -q "authentik"; then
     check_service_health "authentik" "9000"
     get_service_url "Authentik" "9000"
 fi
 
-if docker-compose ps | grep -q "portainer"; then
+if docker_compose ps | grep -q "portainer"; then
     check_service_health "portainer" "9000"
     get_service_url "Portainer" "9000"
 fi
 
-if docker-compose ps | grep -q "caddy"; then
+if docker_compose ps | grep -q "caddy"; then
     check_service_health "caddy" "8080"
     get_service_url "Caddy" "8080"
 fi
 
-if docker-compose ps | grep -q "dozzle"; then
+if docker_compose ps | grep -q "dozzle"; then
     check_service_health "dozzle" "8080"
     get_service_url "Dozzle" "8080"
 fi
 
-if docker-compose ps | grep -q "glances"; then
+if docker_compose ps | grep -q "glances"; then
     check_service_health "glances" "61208"
     get_service_url "Glances" "61208"
 fi
 
-if docker-compose ps | grep -q "guacamole"; then
+if docker_compose ps | grep -q "guacamole"; then
     check_service_health "guacamole" "8080"
     get_service_url "Guacamole" "8080"
 fi
 
-if docker-compose ps | grep -q "watchtower"; then
+if docker_compose ps | grep -q "watchtower"; then
     check_service_health "watchtower"
 fi
 
-if docker-compose ps | grep -q "socket-proxy"; then
+if docker_compose ps | grep -q "socket-proxy"; then
     check_service_health "socket-proxy" "2375"
 fi
 

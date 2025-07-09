@@ -24,7 +24,7 @@ Based on the security check results, your IT Management docker setup is **ready 
 
 ### 🔍 **Security Check Results Explained:**
 
-When you run `./security_check.sh`, the warnings you see are **false positives**:
+When you run `./scripts/security_check.sh`, the warnings you see are **false positives**:
 
 - **PostgreSQL config files** - Just commented default examples
 - **Certificate files** - Runtime-generated in data/ directories (ignored by git)
@@ -41,7 +41,7 @@ Your setup follows Docker security best practices:
 ### 📋 **Final Checklist:**
 
 Before uploading to GitHub:
-- [ ] Run `./security_check.sh` - should show no real issues
+- [ ] Run `./scripts/security_check.sh` - should show no real issues
 - [ ] Check `git status` - no sensitive files staged
 - [ ] Verify secrets/ directories are ignored
 - [ ] Ensure .env contains only configuration (no secrets)

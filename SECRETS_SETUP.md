@@ -75,14 +75,14 @@ echo "your_ldap_password" > guacamole/secrets/guacamole_ldap_password
 
 Run the security check script to verify your setup:
 ```bash
-./security_check.sh
+./scripts/security_check.sh
 ```
 
 This will check for any accidentally exposed secrets or insecure configurations.
 
 ## Security Check Results
 
-When you run `./security_check.sh`, you may see some warnings that are actually **safe and expected**:
+When you run `./scripts/security_check.sh`, you may see some warnings that are actually **safe and expected**:
 
 ### ✅ **Safe/Expected Items:**
 - **PostgreSQL config defaults** - Lines like `#krb_server_keyfile = 'FILE:${sysconfdir}/krb5.keytab'` are commented defaults

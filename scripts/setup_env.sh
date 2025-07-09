@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# IT Management Setup Script
+# InfraKit Setup Script
 # Creates .env files from .env.example templates
 
-echo "🚀 IT Management Setup Script"
-echo "=============================="
+echo "🚀 InfraKit Setup Script"
+echo "========================="
 echo ""
 echo "This script will help you create .env files from the .env.example templates."
 echo ""
@@ -55,7 +55,7 @@ echo ""
 echo "🔐 Next Steps:"
 echo "1. Edit the .env files to customize ports and settings"
 echo "2. Follow SECRETS_SETUP.md to create required secrets"
-echo "3. Run './security_check.sh' to verify your setup"
+echo "3. Run './scripts/security_check.sh' to verify your setup"
 echo "4. Start services with 'make up'"
 echo ""
 echo "✅ Environment setup complete!"

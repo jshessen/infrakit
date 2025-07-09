@@ -1,19 +1,33 @@
-# IT Management Docker Stack
+# InfraKit
 
-A comprehensive Docker-based IT management solution with identity management, monitoring, and security services.
+A comprehensive, secure, and production-ready self-hosted infrastructure toolkit built on Docker. Features identity management, container orchestration, monitoring, remote access, and automated security - everything you need to manage your infrastructure from a single, powerful platform.
+
+## 🛠️ Requirements
+
+- **Docker**: 20.10+ or Docker Desktop
+- **Docker Compose**: V1 (docker-compose) or V2 (docker compose) 
+- **Operating System**: Linux, macOS, or Windows with WSL2
+
+> **Note**: This project automatically detects and uses the correct Docker Compose command (`docker-compose` or `docker compose`)
 
 ## 🚀 Quick Start
+
+### Prerequisites Check
+```bash
+# Check Docker Compose compatibility
+./scripts/check-docker-compose.sh
+```
 
 ### Option 1: Automated Installation
 ```bash
 # Full stack (main server)
-curl -sSL https://raw.githubusercontent.com/yourusername/it-management/main/install.sh | bash -s -- --type full
+curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type full
 
 # Edge agent only (Raspberry Pi, etc.)
-curl -sSL https://raw.githubusercontent.com/yourusername/it-management/main/install.sh | bash -s -- --type edge
+curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type edge
 
 # Monitoring only
-curl -sSL https://raw.githubusercontent.com/yourusername/it-management/main/install.sh | bash -s -- --type monitor
+curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type monitor
 ```
 
 ### Option 2: Manual Installation
@@ -21,12 +35,12 @@ curl -sSL https://raw.githubusercontent.com/yourusername/it-management/main/inst
 1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd it_management
+   cd infrakit
    ```
 
 2. **Set up environment files**
    ```bash
-   ./setup_env.sh
+   ./scripts/setup_env.sh
    ```
 
 3. **Configure secrets**
@@ -88,7 +102,7 @@ Each service has its own `.env.example` file that you can copy to `.env`:
 
 ```bash
 # Automated setup
-./setup_env.sh
+./scripts/setup_env.sh
 
 # Manual setup
 cp .env.example .env
@@ -132,7 +146,7 @@ openssl rand -base64 32 > caddy/secrets/caddy_jwt_token_key
 Run the security check to verify your setup:
 
 ```bash
-./security_check.sh
+./scripts/security_check.sh
 ```
 
 ## 🔄 Usage
@@ -143,6 +157,7 @@ Run the security check to verify your setup:
 make install                  # Set up environment and guide through secrets
 make setup                    # Initialize environment files only
 make check                    # Run security and configuration checks
+make docker-check             # Check Docker Compose compatibility
 
 # Service management
 make up                       # Start all services
@@ -166,29 +181,33 @@ make rm                       # Remove containers only
 ### Utility Scripts
 ```bash
 # Setup and configuration
-./setup_env.sh               # Create .env files from examples
-./security_check.sh          # Verify security configuration
-./health_check.sh            # Check service health and status
+./scripts/setup_env.sh       # Create .env files from examples
+./scripts/security_check.sh  # Verify security configuration
+./scripts/health_check.sh    # Check service health and status
 
 # Backup and restore
-./backup.sh                  # Create full backup
-./restore.sh backup.tar.gz   # Restore from backup
+./scripts/backup.sh          # Create full backup
+./scripts/restore.sh backup.tar.gz   # Restore from backup
 
 # Installation options
-./install.sh --type full     # Install full stack
-./install.sh --type edge     # Install edge agent only
-./install.sh --type monitor  # Install monitoring only
+./scripts/install.sh --type full     # Install full stack
+./scripts/install.sh --type edge     # Install edge agent only
+./scripts/install.sh --type monitor  # Install monitoring only
 ```
 
 ## 📂 Directory Structure
 
 ```
-it_management/
+infrakit/
 ├── .env.example              # Main configuration template
 ├── docker-compose.yml        # Main compose file
 ├── Makefile                  # Management commands
-├── setup_env.sh             # Environment setup script
-├── security_check.sh        # Security verification
+├── scripts/                  # Utility scripts
+│   ├── setup_env.sh         # Environment setup script
+│   ├── security_check.sh    # Security verification
+│   ├── health_check.sh      # Health monitoring
+│   ├── backup.sh            # Backup functionality
+│   └── install.sh           # Installation automation
 ├── SECRETS_SETUP.md         # Secrets configuration guide
 ├── SECURITY_SUMMARY.md      # Security overview
 └── services/
@@ -228,7 +247,7 @@ make restart <service_name>
 
 1. Fork the repository
 2. Create a feature branch
-3. Test your changes with `./security_check.sh`
+3. Test your changes with `./scripts/security_check.sh`
 4. Submit a pull request
 
 ## 📄 License
@@ -239,7 +258,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Check the logs: `make logs <service>`
 - Verify secrets: `cat SECRETS_SETUP.md`
-- Run security check: `./security_check.sh`
+- Run security check: `./scripts/security_check.sh`
 - Review configuration: Check `.env` files
 
 ## 🔗 Service URLs

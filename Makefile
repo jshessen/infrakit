@@ -1,8 +1,17 @@
 .DEFAULT_GOAL:=help
-# --------------------------
+# -all:			## 'Start' InfraKit, and all applicable components - 'docker-compose ... up -d [services...]'
+	$(call docker_compose,up -d $(ARGS))
+
+up:			## 'Up' InfraKit, and all applicable components - 'docker-compose ... up -d [services...]'
+	@make all $(ARGS)
+
+down:			## 'Down' InfraKit, and all applicable components - 'docker-compose ... down [services...]'------------------
 -include .env
 export
 # --------------------------
+
+# Docker Compose Compatibility
+include scripts/docker-compose-compat.mk
 
 # Extract arguments from command line
 ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
@@ -19,63 +28,67 @@ NC := \033[0m # No Color
 
 
 all:		## 'Start' IT Management, and all applicable components - 'docker-compose ... up -d [services...]'
-	docker-compose up -d $(ARGS)
+	$(call docker_compose,up -d $(ARGS))
 
 up:   ## 'Up' IT Management, and all applicable components - 'docker-compose ... up -d [services...]'
 	@make all $(ARGS)
 
 down:   ## 'Down' IT Management, and all applicable components - 'docker-compose ... down [services...]'
-	docker-compose down $(ARGS)
+	$(call docker_compose,down $(ARGS))
 
-stop:			## 'Stop' IT Management, and all applicable components - 'docker-compose ... stop [services...]'
-	@docker-compose stop $(ARGS)
+stop:			## 'Stop' InfraKit, and all applicable components - 'docker-compose ... stop [services...]'
+	$(call docker_compose,stop $(ARGS))
 	
-restart:			## 'Restart' IT Management, and all applicable components - 'docker-compose ... restart [services...]'
-	@docker-compose restart $(ARGS)
+restart:			## 'Restart' InfraKit, and all applicable components - 'docker-compose ... restart [services...]'
+	$(call docker_compose,restart $(ARGS))
 
-rm:			## 'Remove' IT Management, and all applicable components - 'docker-compose ... rm -f [services...]'
-	@docker-compose rm -f $(ARGS)
+rm:			## 'Remove' InfraKit, and all applicable components - 'docker-compose ... rm -f [services...]'
+	$(call docker_compose,rm -f $(ARGS))
 
-images:			## 'Show' IT Management, and all applicable components - 'docker-compose ... images [services...]'
-	@docker-compose images $(ARGS)
+images:			## 'Show' InfraKit, and all applicable components - 'docker-compose ... images [services...]'
+	$(call docker_compose,images $(ARGS))
 
-update:			## 'Update' IT Management, and all applicable components - 'docker-compose ... pull/up [services...]'
-	@docker-compose pull $(ARGS)
+update:			## 'Update' InfraKit, and all applicable components - 'docker-compose ... pull/up [services...]'
+	$(call docker_compose,pull $(ARGS))
 	@make all $(ARGS)
 
 logs:			## 'Show logs' for services - 'docker-compose ... logs [services...]'
-	@docker-compose logs $(ARGS)
+	$(call docker_compose,logs $(ARGS))
 
 install:		## 'Install' - Set up environment and secrets
-	@echo "$(GREEN)🚀 Installing IT Management Stack$(NC)"
-	@./setup_env.sh
+	@echo "$(GREEN)🚀 Installing InfraKit$(NC)"
+	@./scripts/setup_env.sh
 	@echo "$(YELLOW)⚠️  Next: Configure secrets following SECRETS_SETUP.md$(NC)"
 
 check:			## 'Check' - Run security and configuration checks
 	@echo "$(BLUE)🔍 Running security checks...$(NC)"
-	@./security_check.sh
+	@./scripts/security_check.sh
+
+docker-check:	## 'Docker Check' - Check Docker Compose compatibility
+	@./scripts/check-docker-compose.sh
 
 setup:			## 'Setup' - Initialize environment files
-	@./setup_env.sh
+	@./scripts/setup_env.sh
 
 clean:			## 'Clean' - Remove containers, volumes, and networks
 	@echo "$(RED)🧹 Cleaning up containers, volumes, and networks...$(NC)"
-	@docker-compose down -v --remove-orphans
+	$(call docker_compose,down -v --remove-orphans)
 	@docker system prune -f
 
 status:			## 'Status' - Show status of all services
 	@echo "$(BLUE)📊 Service Status:$(NC)"
-	@docker-compose ps
+	$(call docker_compose,ps)
 
 health:			## 'Health' - Check health of running services
 	@echo "$(BLUE)🏥 Health Check:$(NC)"
-	@docker-compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
+	$(call docker_compose,ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}")
 
 # --------------------------
 help:       	## Show this 'help'
-	@echo "Make Application Docker Images and Containers using Docker-Compose files in 'docker' Dir."
+	@echo "InfraKit - Self-Hosted Infrastructure Toolkit"
 	@echo ""
 	@echo "Usage Examples:"
+	@echo "  make install                     # Setup environment and guide through secrets"
 	@echo "  make up                          # Start all services"
 	@echo "  make up portainer dozzle         # Start specific services"
 	@echo "  make down portainer              # Stop specific service"

@@ -40,7 +40,7 @@ make logs <service_name>
 Add any other context about the problem here.
 
 ## ✅ Checklist
-- [ ] I've run `./security_check.sh` and it passes
+- [ ] I've run `./scripts/security_check.sh` and it passes
 - [ ] I've checked the logs with `make logs <service>`
 - [ ] I've verified my `.env` configuration
 - [ ] I've checked if secrets are properly configured

@@ -14,8 +14,8 @@ jobs:
     
     - name: Run security check
       run: |
-        chmod +x ./security_check.sh
-        ./security_check.sh
+        chmod +x ./scripts/security_check.sh
+        ./scripts/security_check.sh
         
     - name: Check for secrets in commits
       run: |
@@ -30,9 +30,21 @@ jobs:
     - name: Validate Docker Compose files
       run: |
         # Check if docker-compose files are valid
+        # Detect docker compose command
+        if command -v docker-compose >/dev/null 2>&1; then
+          DOCKER_COMPOSE_CMD="docker-compose"
+        elif docker compose version >/dev/null 2>&1; then
+          DOCKER_COMPOSE_CMD="docker compose"
+        else
+          echo "❌ Neither docker-compose nor docker compose is available"
+          exit 1
+        fi
+        
+        echo "Using Docker Compose command: $DOCKER_COMPOSE_CMD"
+        
         for file in $(find . -name "docker-compose.yml" -o -name "docker-compose.yaml"); do
           echo "Validating $file"
-          docker-compose -f "$file" config > /dev/null
+          $DOCKER_COMPOSE_CMD -f "$file" config > /dev/null
         done
         
     - name: Check for required files

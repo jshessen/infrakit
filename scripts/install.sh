@@ -1,22 +1,22 @@
 #!/bin/bash
 
-# IT Management Installer
+# InfraKit Installer
 # Supports multiple deployment types
 
 set -e
 
-REPO_URL="https://github.com/yourusername/it-management.git"
+REPO_URL="https://github.com/yourusername/infrakit.git"
 DEPLOYMENT_TYPE=""
 INSTALL_DIR=""
 
 show_help() {
-    echo "IT Management Installer"
+    echo "InfraKit Installer"
     echo ""
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options:"
     echo "  -t, --type TYPE     Deployment type (full|edge|monitor)"
-    echo "  -d, --dir DIR       Installation directory (default: ./it_management)"
+    echo "  -d, --dir DIR       Installation directory (default: ./infrakit)"
     echo "  -h, --help          Show this help"
     echo ""
     echo "Deployment Types:"
@@ -31,10 +31,10 @@ show_help() {
 }
 
 install_full() {
-    echo "📦 Installing full IT management stack..."
+    echo "📦 Installing full InfraKit stack..."
     git clone "$REPO_URL" "$INSTALL_DIR"
     cd "$INSTALL_DIR"
-    ./setup_env.sh
+    ./scripts/setup_env.sh
     echo "✅ Full installation complete!"
     echo "Next steps:"
     echo "1. Edit .env files to customize configuration"
@@ -69,7 +69,7 @@ install_monitor() {
     
     # Set monitoring profile
     cp .env.monitoring .env
-    ./setup_env.sh
+    ./scripts/setup_env.sh
     
     echo "✅ Monitoring installation complete!"
     echo "Next steps:"
@@ -102,7 +102,7 @@ done
 
 # Set default installation directory
 if [ -z "$INSTALL_DIR" ]; then
-    INSTALL_DIR="./it_management"
+    INSTALL_DIR="./infrakit"
 fi
 
 # Validate deployment type

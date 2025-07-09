@@ -28,7 +28,6 @@ backup
 **/*-bkp/**
 
 # Ignore backup files
-backup.sh
 *.tar.gz
 *.zip
 
@@ -55,9 +54,6 @@ backup.sh
 .idea/
 *.swp
 *.swo
-
-# Ignore security check script (optional)
-security_check.sh
 
 # Keep .gitkeep enabled directories (empty)
 !.gitkeep
