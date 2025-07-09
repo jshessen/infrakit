@@ -42,10 +42,14 @@ jobs:
         
         echo "Using Docker Compose command: $DOCKER_COMPOSE_CMD"
         
-        for file in $(find . -name "docker-compose.yml" -o -name "docker-compose.yaml"); do
-          echo "Validating $file"
-          $DOCKER_COMPOSE_CMD -f "$file" config > /dev/null
-        done
+        # Validate main docker-compose.yml (which includes all services)
+        if [ -f "docker-compose.yml" ]; then
+          echo "Validating main docker-compose.yml"
+          $DOCKER_COMPOSE_CMD config > /dev/null
+          echo "✅ Main docker-compose.yml is valid"
+        fi
+        
+        # Skip individual service compose files as they require main environment
         
     - name: Check for required files
       run: |

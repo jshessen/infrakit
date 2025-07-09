@@ -49,7 +49,7 @@ services:
       - ./config/init:/docker-entrypoint-initdb.d # can be removed after initialization
       - /etc/localtime:/etc/localtime:ro
     environment:
-      TZ: ${TZ}
+      TZ: ${TZ:-UTC}
       PGDATA: /var/lib/postgresql/data/guacamole
       #- POSTGRESQL_PASSWORD=${PG_PASS:?database password required}
       POSTGRESQL_PASSWORD_FILE: /run/secrets/guacamole_db_password
@@ -118,7 +118,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     #command: ["bash", "/guacamole-home/certs/trust_pem.sh"]
     environment:
-      PGID: ${USERS_GID}
+      PGID: ${USERS_GID:-1000}
       GUACD_HOSTNAME: guacd
 
       ### DB SETTINGS

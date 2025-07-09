@@ -33,9 +33,9 @@ services:
     pid: host
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${HOMES_DIR}:/data/home:ro
+      - ${HOMES_DIR:-/home}:/data/home:ro
     environment:
-      TZ: ${TZ}
+      TZ: ${TZ:-UTC}
       # GLANCES_OPT: "-C /glances/conf/glances.conf --quiet --export influxdb"
       # GLANCES_OPT: "--export influxdb"
       GLANCES_OPT: "-w"

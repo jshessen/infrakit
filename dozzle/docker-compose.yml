@@ -29,7 +29,7 @@ services:
     ports:
       - ${DOZZLE_PORT:-8080}:8080
     environment:
-      TZ: ${TZ}
+      TZ: ${TZ:-UTC}
       DOZZLE_LEVEL: info
       DOZZLE_TAILSIZE: 300
       DOZZLE_FILTER: "status=running"
