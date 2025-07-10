@@ -58,6 +58,9 @@ install_edge() {
     rm -rf scripts/
     mv scripts_temp scripts/
     
+    # Fix the Makefile path to point to the correct location
+    sed -i 's|../../scripts/docker-compose-compat.mk|scripts/docker-compose-compat.mk|g' Makefile
+    
     # Clean up unnecessary files and directories
     rm -rf deployments/
     find . -name "*.md" -not -name "README.md" -delete
