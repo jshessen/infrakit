@@ -12,6 +12,9 @@
 !.env.example
 !.env.template
 
+# Ignore VS Code workspace files
+*.code-workspace
+
 # Ignore cache
 cache
 
