@@ -43,40 +43,45 @@ A comprehensive, secure, and production-ready self-hosted infrastructure toolkit
 ```
 
 ### Option 1: Automated Installation
+
+#### 🖥️ Full Stack (Main Server)
 ```bash
-# Full stack (main server)
 curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type full
+```
 
-# Edge agent only (Raspberry Pi, etc.)
+#### 🔗 Edge Agent (Raspberry Pi, IoT devices)
+```bash
 curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type edge
+```
 
-# Monitoring only
+#### 📊 Monitoring Only
+```bash
 curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type monitor
 ```
 
 ### Option 2: Manual Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/jshessen/infrakit.git
-   cd infrakit
-   ```
+#### 1. Clone the repository
+```bash
+git clone https://github.com/jshessen/infrakit.git
+cd infrakit
+```
 
-2. **Set up environment files**
-   ```bash
-   ./scripts/setup_env.sh
-   ```
+#### 2. Set up environment files
+```bash
+./scripts/setup_env.sh
+```
 
-3. **Configure secrets**
-   ```bash
-   # Follow the detailed guide
-   cat docs/guides/SECRETS_SETUP.md
-   ```
+#### 3. Configure secrets
+```bash
+# Follow the detailed guide
+cat docs/guides/SECRETS_SETUP.md
+```
 
-4. **Start the services**
-   ```bash
-   make up
-   ```
+#### 4. Start the services
+```bash
+make up
+```
 
 ## 📦 Deployment Options
 
