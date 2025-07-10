@@ -1,7 +1,5 @@
 # InfraKit
 
-<div align="center">
-
 ![InfraKit Logo](assets/logo/infrakit-logo-full.svg)
 
 ![InfraKit](https://img.shields.io/badge/InfraKit-Infrastructure%20Toolkit-blue?style=for-the-badge&logo=docker&logoColor=white)
@@ -18,9 +16,9 @@
   ╚══════════════════════════════════════╝
 ```
 
-**Docker • Security • Monitoring • Automation**
+## Components
 
-</div>
+Docker • Security • Monitoring • Automation
 
 ---
 
@@ -29,7 +27,7 @@ A comprehensive, secure, and production-ready self-hosted infrastructure toolkit
 ## 🛠️ Requirements
 
 - **Docker**: 20.10+ or Docker Desktop
-- **Docker Compose**: V1 (docker-compose) or V2 (docker compose) 
+- **Docker Compose**: V1 (docker-compose) or V2 (docker compose)
 - **Operating System**: Linux, macOS, or Windows with WSL2
 
 > **Note**: This project automatically detects and uses the correct Docker Compose command (`docker-compose` or `docker compose`)
@@ -37,6 +35,7 @@ A comprehensive, secure, and production-ready self-hosted infrastructure toolkit
 ## 🚀 Quick Start
 
 ### Prerequisites Check
+
 ```bash
 # Check Docker Compose compatibility
 ./scripts/check-docker-compose.sh
@@ -45,16 +44,19 @@ A comprehensive, secure, and production-ready self-hosted infrastructure toolkit
 ### Option 1: Automated Installation
 
 #### 🖥️ Full Stack (Main Server)
+
 ```bash
 curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type full
 ```
 
 #### 🔗 Edge Agent (Raspberry Pi, IoT devices)
+
 ```bash
 curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type edge
 ```
 
 #### 📊 Monitoring Only
+
 ```bash
 curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type monitor
 ```
@@ -62,31 +64,37 @@ curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/insta
 ### Option 2: Manual Installation
 
 #### 1. Clone the repository
+
 ```bash
 git clone https://github.com/jshessen/infrakit.git
 cd infrakit
 ```
 
 #### 2. Set up environment files
+
 ```bash
 ./scripts/setup_env.sh
 ```
 
 #### 3. Configure secrets
+
 ```bash
 # Follow the detailed guide
 cat docs/guides/SECRETS_SETUP.md
 ```
 
 #### 4. Start the services
+
 ```bash
 make up
 ```
 
 ## 📦 Deployment Options
 
-### 🖥️ Full Stack (Main Server)
+### 🖥️ Full Stack (Server)
+
 Complete IT management solution with all services:
+
 - Identity management (Authentik)
 - Container management (Portainer)
 - Monitoring (Glances, Dozzle)
@@ -94,14 +102,18 @@ Complete IT management solution with all services:
 - Security (Caddy, Socket Proxy)
 
 ### 🔗 Edge Agent (Lightweight)
+
 Minimal deployment for edge devices:
+
 - Portainer Agent (connects to main server)
 - Watchtower (auto-updates)
 
 Perfect for Raspberry Pi, IoT devices, or remote servers.
 
-### 📊 Monitoring Only
+### 📊 Monitoring Stack
+
 Monitoring-focused deployment:
+
 - Glances (system monitoring)
 - Watchtower (auto-updates)
 
@@ -110,23 +122,27 @@ Great for dedicated monitoring nodes.
 ## 📋 Services Included
 
 ### 🔐 Identity & Security
+
 - **Authentik** - Identity Provider & SSO
 - **Caddy** - Reverse Proxy with automatic HTTPS
 - **Socket Proxy** - Secure Docker socket access
 
 ### 📊 Monitoring & Management
+
 - **Portainer** - Container management interface
 - **Glances** - System monitoring
 - **Dozzle** - Log viewer
 - **Watchtower** - Automatic container updates
 
 ### 🌐 Remote Access
+
 - **Guacamole** - Remote desktop gateway
 - **Cloudflare Tunnel** - Secure external access
 
 ## 🔧 Configuration
 
 ### Environment Files
+
 Each service has its own `.env.example` file that you can copy to `.env`:
 
 ```bash
@@ -141,6 +157,7 @@ cp caddy/.env.example caddy/.env
 ```
 
 ### Port Configuration
+
 Default ports can be customized in each service's `.env` file:
 
 - **Authentik**: 9000 (HTTP), 9443 (HTTPS)
@@ -151,6 +168,7 @@ Default ports can be customized in each service's `.env` file:
 - **Guacamole**: 8080
 
 ### Service Profiles
+
 Services are organized into profiles that can be enabled/disabled:
 
 ```bash
@@ -161,6 +179,7 @@ COMPOSE_PROFILES=container_management,observability,identity,remote_access,secur
 ## 🛡️ Security
 
 ### Secrets Management
+
 All sensitive data is stored in `secrets/` directories using Docker secrets:
 
 ```bash
@@ -172,6 +191,7 @@ openssl rand -base64 32 > caddy/secrets/caddy_jwt_token_key
 ```
 
 ### Security Check
+
 Run the security check to verify your setup:
 
 ```bash
@@ -181,6 +201,7 @@ Run the security check to verify your setup:
 ## 🔄 Usage
 
 ### Make Commands
+
 ```bash
 # Installation and setup
 make install                  # Set up environment and guide through secrets
@@ -214,6 +235,7 @@ make rm                       # Remove containers only
 ```
 
 ### Utility Scripts
+
 ```bash
 # Setup and configuration
 ./scripts/setup_env.sh       # Create .env files from examples
@@ -239,7 +261,7 @@ make rm                       # Remove containers only
 
 ## 📂 Directory Structure
 
-```
+```text
 infrakit/
 ├── .env.example              # Main configuration template
 ├── docker-compose.yml        # Main compose file
@@ -280,6 +302,7 @@ infrakit/
 4. **Network issues**: Ensure Docker networks are available
 
 ### Logs and Debugging
+
 ```bash
 # View service logs
 make logs <service_name>
@@ -319,6 +342,7 @@ InfraKit includes various branding assets organized by purpose and optimized for
 | **Social Media** | **Open Graph/Twitter** | `assets/social/og-image.png` | 284KB |
 
 ### Usage Guidelines
+
 - Use `infrakit-logo-full.svg` for headers and main documentation (SVG recommended)
 - Use `infrakit-logo-icon.svg` for avatars and compact spaces (SVG recommended)
 - Use `infrakit-wordmark.svg` for text-based branding and footers
@@ -337,12 +361,12 @@ InfraKit includes various branding assets organized by purpose and optimized for
 
 After starting, services are available at:
 
-- **Authentik**: http://localhost:9000
-- **Portainer**: http://localhost:9000
-- **Caddy**: http://localhost:8080
-- **Dozzle**: http://localhost:8080
-- **Glances**: http://localhost:61208
-- **Guacamole**: http://localhost:8080
+- **Authentik**: <http://localhost:9000>
+- **Portainer**: <http://localhost:9000>
+- **Caddy**: <http://localhost:8080>
+- **Dozzle**: <http://localhost:8080>
+- **Glances**: <http://localhost:61208>
+- **Guacamole**: <http://localhost:8080>
 
 *Note: Actual URLs depend on your port configuration in `.env` files*
 
