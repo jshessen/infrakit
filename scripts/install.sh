@@ -44,27 +44,35 @@ install_full() {
 
 install_edge() {
     echo "🔗 Installing edge agent..."
-    git clone "$REPO_URL" "$INSTALL_DIR"
+    
+    # Create temporary directory for selective download
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+    
+    # Clone with minimal depth to get only the latest commit
+    git clone --depth 1 "$REPO_URL" temp_repo
+    cd temp_repo
+    
+    # Create the target directory
+    mkdir -p "$INSTALL_DIR"
+    
+    # Copy only what we need for edge deployment
+    cp -r deployments/edge-agent/* "$INSTALL_DIR"/
+    
+    # Copy essential scripts for make compatibility
+    mkdir -p "$INSTALL_DIR"/scripts
+    cp scripts/docker-compose-compat.mk "$INSTALL_DIR"/scripts/
+    cp scripts/docker-compose-compat.sh "$INSTALL_DIR"/scripts/
+    
+    # Clean up temp directory
+    cd /
+    rm -rf "$TEMP_DIR"
+    
+    # Go to the installation directory
     cd "$INSTALL_DIR"
-    
-    # Copy edge deployment files to root
-    cp -r deployments/edge-agent/* .
-    
-    # Keep necessary scripts directory for make compatibility
-    # Only keep essential scripts for edge deployment
-    mkdir -p scripts_temp
-    cp scripts/docker-compose-compat.mk scripts_temp/
-    cp scripts/docker-compose-compat.sh scripts_temp/
-    rm -rf scripts/
-    mv scripts_temp scripts/
     
     # Fix the Makefile path to point to the correct location
     sed -i 's|../../scripts/docker-compose-compat.mk|scripts/docker-compose-compat.mk|g' Makefile
-    
-    # Clean up unnecessary files and directories
-    rm -rf deployments/
-    find . -name "*.md" -not -name "README.md" -delete
-    find . -name "docker-compose.yml" -not -path "./docker-compose.yml" -delete
     
     make setup
     echo "✅ Edge agent installation complete!"
@@ -75,11 +83,53 @@ install_edge() {
 
 install_monitor() {
     echo "📊 Installing monitoring stack..."
-    git clone "$REPO_URL" "$INSTALL_DIR"
+    
+    # Create temporary directory for selective download
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+    
+    # Clone with minimal depth to get only the latest commit
+    git clone --depth 1 "$REPO_URL" temp_repo
+    cd temp_repo
+    
+    # Create the target directory
+    mkdir -p "$INSTALL_DIR"
+    
+    # Copy essential files for monitoring deployment
+    cp docker-compose.yml "$INSTALL_DIR"/
+    cp Makefile "$INSTALL_DIR"/
+    cp .env.example "$INSTALL_DIR"/
+    
+    # Copy monitoring-specific environment file if it exists
+    [ -f .env.monitoring ] && cp .env.monitoring "$INSTALL_DIR"/
+    
+    # Copy necessary scripts
+    mkdir -p "$INSTALL_DIR"/scripts
+    cp scripts/docker-compose-compat.mk "$INSTALL_DIR"/scripts/
+    cp scripts/docker-compose-compat.sh "$INSTALL_DIR"/scripts/
+    cp scripts/setup_env.sh "$INSTALL_DIR"/scripts/
+    
+    # Copy monitoring services
+    for service in glances watchtower; do
+        if [ -d "$service" ]; then
+            cp -r "$service" "$INSTALL_DIR"/
+        fi
+    done
+    
+    # Clean up temp directory
+    cd /
+    rm -rf "$TEMP_DIR"
+    
+    # Go to the installation directory
     cd "$INSTALL_DIR"
     
     # Set monitoring profile
-    cp .env.monitoring .env
+    if [ -f .env.monitoring ]; then
+        cp .env.monitoring .env
+    else
+        cp .env.example .env
+    fi
+    
     ./scripts/setup_env.sh
     
     echo "✅ Monitoring installation complete!"
