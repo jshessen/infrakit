@@ -330,3 +330,8 @@ After starting, services are available at:
 - **Guacamole**: http://localhost:8080
 
 *Note: Actual URLs depend on your port configuration in `.env` files*
+
+## 📋 Releases
+
+- **Latest Release**: [v1.1.0](docs/releases/RELEASE_NOTES_v1.1.0.md) - Production-Ready Infrastructure Toolkit
+- **All Releases**: See [docs/releases/](docs/releases/) for complete release history and documentation
