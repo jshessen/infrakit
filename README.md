@@ -45,20 +45,20 @@ A comprehensive, secure, and production-ready self-hosted infrastructure toolkit
 ### Option 1: Automated Installation
 ```bash
 # Full stack (main server)
-curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type full
+curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type full
 
 # Edge agent only (Raspberry Pi, etc.)
-curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type edge
+curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type edge
 
 # Monitoring only
-curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type monitor
+curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type monitor
 ```
 
 ### Option 2: Manual Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/jshessen/infrakit.git
    cd infrakit
    ```
 

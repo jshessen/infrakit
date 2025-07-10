@@ -36,10 +36,10 @@ This guide covers different deployment scenarios for the InfraKit infrastructure
 ### Installation
 ```bash
 # Automated
-curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type full
+curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type full
 
 # Manual
-git clone <repo-url>
+git clone https://github.com/jshessen/infrakit.git
 cd infrakit
 ./scripts/setup_env.sh
 # Configure secrets per docs/guides/SECRETS_SETUP.md
@@ -67,11 +67,11 @@ make up
 ### Installation
 ```bash
 # Automated
-curl -sSL https://raw.githubusercontent.com/yourusername/it-management/main/scripts/install.sh | bash -s -- --type edge
+curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type edge
 
 # Manual
-git clone <repo-url>
-cd it_management/deployments/edge-agent
+git clone https://github.com/jshessen/infrakit.git
+cd infrakit/deployments/edge-agent
 make setup
 # Edit .env with main server details
 make up
@@ -99,10 +99,10 @@ TZ=America/Chicago
 ### Installation
 ```bash
 # Automated
-curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type monitor
+curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type monitor
 
 # Manual
-git clone <repo-url>
+git clone https://github.com/jshessen/infrakit.git
 cd infrakit
 cp .env.monitoring .env
 ./scripts/setup_env.sh
@@ -145,10 +145,10 @@ COMPOSE_PROFILES=observability,remote_access,auto_update
 1. **Main Server Setup**
    ```bash
    # Install full stack
-   curl -sSL https://raw.githubusercontent.com/yourusername/it-management/main/scripts/install.sh | bash -s -- --type full
+   curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type full
    
    # Configure and start
-   cd it_management
+   cd infrakit
    # Edit .env files and create secrets
    make up
    ```
@@ -156,7 +156,7 @@ COMPOSE_PROFILES=observability,remote_access,auto_update
 2. **Edge Device Setup**
    ```bash
    # Install edge agent
-   curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type edge
+   curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/install.sh | bash -s -- --type edge
    
    # Configure connection to main server
    cd infrakit

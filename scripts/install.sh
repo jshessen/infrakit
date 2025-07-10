@@ -5,7 +5,7 @@
 
 set -e
 
-REPO_URL="https://github.com/yourusername/infrakit.git"
+REPO_URL="https://github.com/jshessen/infrakit.git"
 DEPLOYMENT_TYPE=""
 INSTALL_DIR=""
 
