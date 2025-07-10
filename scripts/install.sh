@@ -9,6 +9,20 @@ REPO_URL="https://github.com/jshessen/infrakit.git"
 DEPLOYMENT_TYPE=""
 INSTALL_DIR=""
 
+# Function to get absolute path (fallback for systems without realpath)
+get_absolute_path() {
+    local path="$1"
+    if command -v realpath >/dev/null 2>&1; then
+        realpath "$path"
+    else
+        # Fallback: convert relative to absolute manually
+        case "$path" in
+            /*) echo "$path" ;;
+            *) echo "$(pwd)/$path" ;;
+        esac
+    fi
+}
+
 show_help() {
     echo "InfraKit Installer"
     echo ""
@@ -44,6 +58,9 @@ install_full() {
 
 install_edge() {
     echo "🔗 Installing edge agent..."
+    
+    # Convert to absolute path
+    INSTALL_DIR=$(get_absolute_path "$INSTALL_DIR")
     
     # Create temporary directory for selective download
     TEMP_DIR=$(mktemp -d)
@@ -83,6 +100,9 @@ install_edge() {
 
 install_monitor() {
     echo "📊 Installing monitoring stack..."
+    
+    # Convert to absolute path
+    INSTALL_DIR=$(get_absolute_path "$INSTALL_DIR")
     
     # Create temporary directory for selective download
     TEMP_DIR=$(mktemp -d)
