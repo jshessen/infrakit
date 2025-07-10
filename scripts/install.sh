@@ -47,11 +47,19 @@ install_edge() {
     git clone "$REPO_URL" "$INSTALL_DIR"
     cd "$INSTALL_DIR"
     
-    # Copy only edge deployment files
+    # Copy edge deployment files to root
     cp -r deployments/edge-agent/* .
-    rm -rf deployments/
     
-    # Clean up unnecessary files
+    # Keep necessary scripts directory for make compatibility
+    # Only keep essential scripts for edge deployment
+    mkdir -p scripts_temp
+    cp scripts/docker-compose-compat.mk scripts_temp/
+    cp scripts/docker-compose-compat.sh scripts_temp/
+    rm -rf scripts/
+    mv scripts_temp scripts/
+    
+    # Clean up unnecessary files and directories
+    rm -rf deployments/
     find . -name "*.md" -not -name "README.md" -delete
     find . -name "docker-compose.yml" -not -path "./docker-compose.yml" -delete
     
