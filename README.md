@@ -212,6 +212,7 @@ make rm                       # Remove containers only
 ```bash
 # Setup and configuration
 ./scripts/setup_env.sh       # Create .env files from examples
+./scripts/setup_gpg.sh       # Configure GPG for commit signing
 ./scripts/security_check.sh  # Verify security configuration
 ./scripts/health_check.sh    # Check service health and status
 
@@ -289,8 +290,9 @@ make restart <service_name>
 
 1. Fork the repository
 2. Create a feature branch
-3. Test your changes with `./scripts/security_check.sh`
-4. Submit a pull request
+3. Set up GPG signing (optional but recommended): `./scripts/setup_gpg.sh`
+4. Test your changes with `./scripts/security_check.sh`
+5. Submit a pull request
 
 See our [Contributing Guide](docs/development/CONTRIBUTING.md) for detailed guidelines.
 
