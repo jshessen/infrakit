@@ -1,14 +1,12 @@
 # InfraKit Deployment Guide
 
-This guide covers different deplo# Automated
-curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/install.sh | bash -s -- --type edge
+<div align="center">
 
-# Manual
-git clone <repo-url>
-cd infrakit/deployments/edge-agent
-make setup
-# Edit .env with main server details
-make upnarios for the InfraKit infrastructure toolkit.
+![InfraKit Icon](assets/logo/infrakit-logo-icon.svg)
+
+</div>
+
+This guide covers different deployment scenarios for the InfraKit infrastructure toolkit.
 
 ## 🏗️ Deployment Architecture
 

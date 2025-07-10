@@ -1,14 +1,16 @@
 .DEFAULT_GOAL:=help
-# -all:			## 'Start' InfraKit, and all applicable components - 'docker-compose ... up -d [services...]'
-	$(call docker_compose,up -d $(ARGS))
 
-up:			## 'Up' InfraKit, and all applicable components - 'docker-compose ... up -d [services...]'
-	@make all $(ARGS)
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║                            🏗️ InfraKit 📦                                    ║
+# ║                     Self-Hosted Infrastructure Toolkit                       ║
+# ║                                                                              ║
+# ║  Docker • Security • Monitoring • Automation                                 ║
+# ║  Repository: https://github.com/jshessen/infrakit                            ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
 
-down:			## 'Down' InfraKit, and all applicable components - 'docker-compose ... down [services...]'------------------
+# Environment Variables
 -include .env
 export
-# --------------------------
 
 # Docker Compose Compatibility
 include scripts/docker-compose-compat.mk
@@ -22,9 +24,10 @@ RED := \033[0;31m
 GREEN := \033[0;32m
 YELLOW := \033[0;33m
 BLUE := \033[0;34m
+CYAN := \033[0;36m
 NC := \033[0m # No Color
 
-.PHONY: all up down stop restart rm images update logs install check setup clean
+.PHONY: all up down stop restart rm images update update-safe update-check logs install check setup clean
 
 
 all:		## 'Start' IT Management, and all applicable components - 'docker-compose ... up -d [services...]'
@@ -52,6 +55,12 @@ update:			## 'Update' InfraKit, and all applicable components - 'docker-compose 
 	$(call docker_compose,pull $(ARGS))
 	@make all $(ARGS)
 
+update-safe:		## 'Safe Update' - Use update script with backup and rollback capabilities
+	@./scripts/update.sh
+
+update-check:		## 'Check Updates' - Check for available updates without applying
+	@./scripts/update.sh --check-only
+
 logs:			## 'Show logs' for services - 'docker-compose ... logs [services...]'
 	$(call docker_compose,logs $(ARGS))
 
@@ -63,9 +72,14 @@ install:		## 'Install' - Set up environment and secrets
 check:			## 'Check' - Run security and configuration checks
 	@echo "$(BLUE)🔍 Running security checks...$(NC)"
 	@./scripts/security_check.sh
+	@echo "$(BLUE)🎨 Validating branding integration...$(NC)"
+	@./scripts/validate_branding.sh
 
 docker-check:	## 'Docker Check' - Check Docker Compose compatibility
 	@./scripts/check-docker-compose.sh
+
+branding-check:	## 'Branding Check' - Validate branding integration
+	@./scripts/validate_branding.sh
 
 setup:			## 'Setup' - Initialize environment files
 	@./scripts/setup_env.sh
@@ -83,19 +97,37 @@ health:			## 'Health' - Check health of running services
 	@echo "$(BLUE)🏥 Health Check:$(NC)"
 	$(call docker_compose,ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}")
 
+production-check:	## 'Production Check' - Validate production readiness
+	@./scripts/production_check.sh
+
+pre-commit-check:	## 'Pre-Commit Check' - Comprehensive validation before committing
+	@./scripts/pre_commit_check.sh
+
+performance:		## 'Performance' - Monitor system and container performance
+	@./scripts/performance_monitor.sh
+
+deploy:			## 'Deploy' - Interactive deployment script
+	@./scripts/deploy.sh
+
 # --------------------------
 help:       	## Show this 'help'
-	@echo "InfraKit - Self-Hosted Infrastructure Toolkit"
+	@echo "$(CYAN)╔══════════════════════════════════════════════════════════════════════════════╗$(NC)"
+	@echo "$(CYAN)║                            🏗️ InfraKit 📦                                   ║$(NC)"
+	@echo "$(CYAN)║                     Self-Hosted Infrastructure Toolkit                      ║$(NC)"
+	@echo "$(CYAN)║                                                                              ║$(NC)"
+	@echo "$(CYAN)║  Docker • Security • Monitoring • Automation                                ║$(NC)"
+	@echo "$(CYAN)║  Repository: https://github.com/jshessen/infrakit                           ║$(NC)"
+	@echo "$(CYAN)╚══════════════════════════════════════════════════════════════════════════════╝$(NC)"
 	@echo ""
-	@echo "Usage Examples:"
-	@echo "  make install                     # Setup environment and guide through secrets"
-	@echo "  make up                          # Start all services"
-	@echo "  make up portainer dozzle         # Start specific services"
-	@echo "  make down portainer              # Stop specific service"
-	@echo "  make logs portainer              # Show logs for portainer"
-	@echo "  make logs -f --tail=100          # Show logs with docker-compose flags"
-	@echo "  make restart authentik caddy     # Restart multiple services"
+	@echo "$(BLUE)📖 Usage Examples:$(NC)"
+	@echo "  $(GREEN)make install$(NC)                     # Setup environment and guide through secrets"
+	@echo "  $(GREEN)make up$(NC)                          # Start all services"
+	@echo "  $(GREEN)make up portainer dozzle$(NC)         # Start specific services"
+	@echo "  $(GREEN)make down portainer$(NC)              # Stop specific service"
+	@echo "  $(GREEN)make logs portainer$(NC)              # Show logs for portainer"
+	@echo "  $(GREEN)make logs -f --tail=100$(NC)          # Show logs with docker-compose flags"
+	@echo "  $(GREEN)make restart authentik caddy$(NC)     # Restart multiple services"
 	@echo ""
-	@echo "Note: All arguments after the target are passed directly to docker-compose"
+	@echo "$(YELLOW)💡 Note: All arguments after the target are passed directly to docker-compose$(NC)"
 	@echo ""
 	@awk 'BEGIN {FS = ":.*##"; printf "Targets:\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)

@@ -1,7 +1,9 @@
-# MAIN DOCKER-COMPOSE
+# InfraKit - Self-Hosted Infrastructure Toolkit
+# Repository: https://github.com/jshessen/infrakit
+# Documentation: README.md | DEPLOYMENT_GUIDE.md
 
 ##############################
-# IT MANAGEMENT
+# MAIN DOCKER-COMPOSE CONFIGURATION
 #
 include:
   # echo COMPOSE_PROFILES=container_management,observability,identity,remote_access,security >> .env

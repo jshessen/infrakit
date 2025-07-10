@@ -1,5 +1,29 @@
 # InfraKit
 
+<div align="center">
+
+![InfraKit Logo](assets/logo/infrakit-logo-full.svg)
+
+![InfraKit](https://img.shields.io/badge/InfraKit-Infrastructure%20Toolkit-blue?style=for-the-badge&logo=docker&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue?style=for-the-badge&logo=docker)
+![Security](https://img.shields.io/badge/Security-Hardened-green?style=for-the-badge&logo=shield)
+![Monitoring](https://img.shields.io/badge/Monitoring-Enabled-orange?style=for-the-badge&logo=grafana)
+
+```ascii
+  ╔══════════════════════════════════════╗
+  ║   🏗️  📦  🔐  📊  ⚙️   InfraKit    ║
+  ║                                      ║
+  ║     Self-Hosted Infrastructure       ║
+  ║           Toolkit                    ║
+  ╚══════════════════════════════════════╝
+```
+
+**Docker • Security • Monitoring • Automation**
+
+</div>
+
+---
+
 A comprehensive, secure, and production-ready self-hosted infrastructure toolkit built on Docker. Features identity management, container orchestration, monitoring, remote access, and automated security - everything you need to manage your infrastructure from a single, powerful platform.
 
 ## 🛠️ Requirements
@@ -171,7 +195,13 @@ make logs                     # Show all logs
 make logs portainer           # Show specific service logs
 make status                   # Show service status
 make health                   # Run health checks
-make update                   # Update all images and restart
+make performance              # Monitor system and container performance
+make production-check         # Validate production readiness
+
+# Updates
+make update                   # Quick update (pull images and restart)
+make update-safe              # Safe update with backup and rollback capabilities
+make update-check             # Check for available updates without applying
 
 # Cleanup
 make clean                    # Remove containers, volumes, and networks
@@ -184,6 +214,12 @@ make rm                       # Remove containers only
 ./scripts/setup_env.sh       # Create .env files from examples
 ./scripts/security_check.sh  # Verify security configuration
 ./scripts/health_check.sh    # Check service health and status
+
+# Updates and maintenance
+./scripts/update.sh          # Safe update with backup and rollback
+./scripts/update.sh --check-only     # Check for updates
+./scripts/update.sh --rollback       # Rollback to previous version
+./scripts/update.sh --list-backups   # List available backups
 
 # Backup and restore
 ./scripts/backup.sh          # Create full backup
@@ -253,6 +289,27 @@ make restart <service_name>
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🎨 Branding Assets
+
+InfraKit includes various branding assets organized by purpose and optimized for different use cases:
+
+| Asset | Purpose | File | Size |
+|-------|---------|------|------|
+| ![InfraKit Logo](assets/logo/infrakit-logo-icon.svg) | **Main Logo** | `assets/logo/infrakit-logo-icon.svg` | Web-optimized |
+| ![InfraKit Wordmark](assets/logo/infrakit-wordmark.svg) | **Wordmark Only** | `assets/logo/infrakit-wordmark.svg` | Web-optimized |
+| **Full Logo** | **Complete Wordmark** | `assets/logo/infrakit-logo-full.svg` | Web-optimized |
+| **Optimized Icons** | **Size Variants** | `assets/optimized/icon-*.png` | 7-61KB |
+| **Favicon** | **Browser Icon** | `assets/favicon/favicon.ico` | 27KB |
+| **Social Media** | **Open Graph/Twitter** | `assets/social/og-image.png` | 284KB |
+
+### Usage Guidelines
+- Use `infrakit-logo-full.svg` for headers and main documentation (SVG recommended)
+- Use `infrakit-logo-icon.svg` for avatars and compact spaces (SVG recommended)
+- Use `infrakit-wordmark.svg` for text-based branding and footers
+- Use PNG fallbacks (`assets/logo/*-optimized.png`) for legacy browser support
+- Use optimized variants (`assets/optimized/`) for specific size requirements
+- All assets are optimized for both light and dark backgrounds
 
 ## 🆘 Support
 
