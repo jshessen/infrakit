@@ -67,7 +67,7 @@ logs:			## 'Show logs' for services - 'docker-compose ... logs [services...]'
 install:		## 'Install' - Set up environment and secrets
 	@echo "$(GREEN)🚀 Installing InfraKit$(NC)"
 	@./scripts/setup_env.sh
-	@echo "$(YELLOW)⚠️  Next: Configure secrets following SECRETS_SETUP.md$(NC)"
+	@echo "$(YELLOW)⚠️  Next: Configure secrets following docs/guides/SECRETS_SETUP.md$(NC)"
 
 check:			## 'Check' - Run security and configuration checks
 	@echo "$(BLUE)🔍 Running security checks...$(NC)"

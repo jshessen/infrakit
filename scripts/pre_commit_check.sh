@@ -168,7 +168,7 @@ check_secrets_directory() {
         fi
     fi
     
-    check_file "$PROJECT_ROOT/SECRETS_SETUP.md" "Secrets setup documentation" "required"
+    check_file "$PROJECT_ROOT/docs/guides/SECRETS_SETUP.md" "Secrets setup documentation" "required"
 }
 
 check_documentation() {

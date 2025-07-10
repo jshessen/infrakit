@@ -241,7 +241,7 @@ if [[ "$ENVIRONMENT" == "production" ]]; then
     if [[ ! -d "secrets" ]] || [[ -z "$(ls -A secrets 2>/dev/null)" ]]; then
         echo -e "${YELLOW}⚠️  No secrets found${NC}"
         echo "Please set up secrets before continuing:"
-        echo "  1. Read SECRETS_SETUP.md"
+        echo "  1. Read docs/guides/SECRETS_SETUP.md"
         echo "  2. Run ./scripts/setup_env.sh"
         echo "  3. Generate required secrets"
         confirm "Continue without secrets setup?"

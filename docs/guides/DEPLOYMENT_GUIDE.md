@@ -42,7 +42,7 @@ curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/i
 git clone <repo-url>
 cd infrakit
 ./scripts/setup_env.sh
-# Configure secrets per SECRETS_SETUP.md
+# Configure secrets per docs/guides/SECRETS_SETUP.md
 make up
 ```
 

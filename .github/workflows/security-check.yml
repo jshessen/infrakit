@@ -54,7 +54,7 @@ jobs:
     - name: Check for required files
       run: |
         # Ensure critical files exist
-        required_files=(".env.example" "README.md" "SECRETS_SETUP.md" "Makefile")
+        required_files=(".env.example" "README.md" "docs/guides/SECRETS_SETUP.md" "Makefile")
         for file in "${required_files[@]}"; do
           if [ ! -f "$file" ]; then
             echo "❌ Required file missing: $file"

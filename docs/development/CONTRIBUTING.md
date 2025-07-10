@@ -48,7 +48,7 @@ Thank you for your interest in contributing to InfraKit! This document provides 
 ### 📝 Documentation
 - Update README.md for new features
 - Create/update `.env.example` files
-- Document new secrets in SECRETS_SETUP.md
+- Document new secrets in docs/guides/SECRETS_SETUP.md
 - Include deployment considerations
 
 ### 🧪 Testing

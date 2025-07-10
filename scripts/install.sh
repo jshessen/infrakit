@@ -38,7 +38,7 @@ install_full() {
     echo "✅ Full installation complete!"
     echo "Next steps:"
     echo "1. Edit .env files to customize configuration"
-    echo "2. Follow SECRETS_SETUP.md to create secrets"
+    echo "2. Follow docs/guides/SECRETS_SETUP.md to create secrets"
     echo "3. Run 'make up' to start services"
 }
 
