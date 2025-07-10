@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Preparing for next release...
+
+## [1.1.0] - 2025-07-10
+
+### Added
 - **🎨 Complete branding integration**: Web-optimized SVG logos and PNG fallbacks
   - `infrakit-logo-full.svg` - Full logo with wordmark (web-optimized)
   - `infrakit-logo-icon.svg` - Clean icon for avatars and compact spaces (web-optimized)
@@ -33,14 +38,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `make update-check` - Check for available updates without applying
   - Rollback functionality if updates fail
   - Health checks after updates
-- Initial release of IT Management Docker Stack
-- Full stack deployment with all services
-- Edge agent deployment for lightweight devices
-- Monitoring-only deployment option
-- Automated installation scripts
-- Comprehensive security checks
-- Docker secrets management
-- Multi-profile support
+- **🚀 Production deployment features**: Enhanced production readiness
+  - `scripts/production_check.sh` - Comprehensive production validation
+  - `scripts/pre_commit_check.sh` - Pre-commit validation system
+  - `scripts/deploy.sh` - Interactive deployment with environment support
+  - Multi-environment configuration support (dev/staging/production)
+- **🔧 Enhanced automation**: Improved management and deployment
+  - Automated installation scripts for different deployment types
+  - Docker Compose compatibility detection and handling
+  - Profile-based service management
+  - Comprehensive Makefile with production targets
 
 ### Services Included
 - Authentik - Identity Provider & SSO
