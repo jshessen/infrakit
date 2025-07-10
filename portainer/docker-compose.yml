@@ -39,6 +39,7 @@ services:
     environment:
       TZ: ${TZ}
       DOCKER_HOST: tcp://socket-proxy:${SOCKET_PROXY_PORT:-2375}
+    #labels:
   #
   ##########
 

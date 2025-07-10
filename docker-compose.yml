@@ -8,9 +8,9 @@
 include:
   # echo COMPOSE_PROFILES=container_management,observability,identity,remote_access,security >> .env
   ##########
-  # Default Services
-  # profile:
-  # COMPOSE_PROFILES:
+  # Core Infrastructure Services
+  # profile: (always enabled)
+  # COMPOSE_PROFILES: (none required)
   #
   # Socket-Proxy to avoid direct access to docker socket
   - path:     ./socket-proxy/docker-compose.yml
@@ -18,7 +18,6 @@ include:
   # Watchtower to update containers automatically
   - path:     ./watchtower/docker-compose.yml
     #env_file: ./watchtower/.env
-
   # Caddy Docker Proxy
   - path:     ./caddy/docker-compose.yml
     #env_file: ./caddy/.env
@@ -68,8 +67,8 @@ include:
   # COMPOSE_PROFILES=remote_access
   #
   # Guacamole is a clientless remote desktop gateway that provides access to remote desktops through a web browser
-  - path:     guacamole/docker-compose.yml
-    #env_file: guacamole/.env
+  - path:     ./guacamole/docker-compose.yml
+    #env_file: ./guacamole/.env
   #
   ##########
 
@@ -81,7 +80,7 @@ include:
   # Cloudflared is used to create secure tunnels to Cloudflare, allowing access to services
   # without exposing them directly to the internet
   - path:     ./cloudflared/docker-compose.yml
-    #env_file: ./cloudflared/config.d/cloudflared.env
+    #env_file: ./cloudflared/.env
   #
   ##########
 #
@@ -92,11 +91,11 @@ include:
 #
 networks:
   default:
-    name: mgmt-net
+    name: ${NETWORK_NAME:-mgmt-net}
     driver: bridge
     ipam:
       config:
-        - subnet: 172.16.0.32/27
+        - subnet: ${NETWORK_SUBNET:-172.16.0.32/27}
   monitor-net:
     external: true
 #
