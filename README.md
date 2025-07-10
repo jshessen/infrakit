@@ -70,7 +70,7 @@ curl -sSL https://raw.githubusercontent.com/yourusername/infrakit/main/scripts/i
 3. **Configure secrets**
    ```bash
    # Follow the detailed guide
-   cat SECRETS_SETUP.md
+   cat docs/guides/SECRETS_SETUP.md
    ```
 
 4. **Start the services**
@@ -238,14 +238,20 @@ infrakit/
 ├── .env.example              # Main configuration template
 ├── docker-compose.yml        # Main compose file
 ├── Makefile                  # Management commands
+├── docs/                     # Documentation
+│   ├── guides/              # User guides (deployment, security, branding)
+│   ├── development/         # Development documentation
+│   ├── releases/            # Release notes and history
+│   └── templates/           # Templates for future releases
 ├── scripts/                  # Utility scripts
 │   ├── setup_env.sh         # Environment setup script
 │   ├── security_check.sh    # Security verification
 │   ├── health_check.sh      # Health monitoring
 │   ├── backup.sh            # Backup functionality
 │   └── install.sh           # Installation automation
-├── SECRETS_SETUP.md         # Secrets configuration guide
-├── SECURITY_SUMMARY.md      # Security overview
+├── deployments/             # Deployment configurations
+│   └── edge-agent/         # Edge device deployment
+├── assets/                  # Branding and static assets
 └── services/
     ├── authentik/
     │   ├── .env.example
@@ -286,6 +292,8 @@ make restart <service_name>
 3. Test your changes with `./scripts/security_check.sh`
 4. Submit a pull request
 
+See our [Contributing Guide](docs/development/CONTRIBUTING.md) for detailed guidelines.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -314,7 +322,7 @@ InfraKit includes various branding assets organized by purpose and optimized for
 ## 🆘 Support
 
 - Check the logs: `make logs <service>`
-- Verify secrets: `cat SECRETS_SETUP.md`
+- Verify secrets: `cat docs/guides/SECRETS_SETUP.md`
 - Run security check: `./scripts/security_check.sh`
 - Review configuration: Check `.env` files
 

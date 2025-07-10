@@ -82,7 +82,7 @@ curl -sSL https://raw.githubusercontent.com/jshessen/infrakit/main/scripts/insta
    ./scripts/setup_env.sh
    ```
 
-3. **Configure secrets** (follow `SECRETS_SETUP.md`)
+3. **Configure secrets** (follow `docs/guides/SECRETS_SETUP.md`)
 
 4. **Start services**:
    ```bash
@@ -135,19 +135,19 @@ make update
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](../development/CONTRIBUTING.md) for details.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](../../LICENSE) file for details.
 
 ## 🔗 Resources
 
-- **Documentation**: [README.md](README.md)
-- **Deployment Guide**: [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
-- **Security Setup**: [SECRETS_SETUP.md](SECRETS_SETUP.md)
-- **Branding Guide**: [BRANDING_GUIDE.md](BRANDING_GUIDE.md)
-- **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Documentation**: [README.md](../../README.md)
+- **Deployment Guide**: [docs/guides/DEPLOYMENT_GUIDE.md](../guides/DEPLOYMENT_GUIDE.md)
+- **Security Setup**: [docs/guides/SECRETS_SETUP.md](../guides/SECRETS_SETUP.md)
+- **Branding Guide**: [docs/guides/BRANDING_GUIDE.md](../guides/BRANDING_GUIDE.md)
+- **Contributing**: [docs/development/CONTRIBUTING.md](../development/CONTRIBUTING.md)
 
 ---
 
